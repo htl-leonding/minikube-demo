@@ -21,12 +21,22 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
-      - name: Build with Maven
-        run: |
-          echo ${{ github.repository }}
-          echo ${{ github.actor }}
-          mvn -B package
-          ls -lh target
-          cp src/main/docker/Dockerfile ./target/
-          docker build --tag ghcr.io/${{ github.actor }}/backend:latest ./target
-          docker push ghcr.io/${{ github.actor }}/backend:latest
+#      - name: Build with Maven
+#        run: |
+#          echo ${{ github.repository }}
+#          echo ${{ github.actor }}
+#          mvn -B package
+#          ls -lh target
+#          cp src/main/docker/Dockerfile ./target/
+#          docker build --tag ghcr.io/${{ github.actor }}/backend:latest ./target
+#          docker push ghcr.io/${{ github.actor }}/backend:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/main/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
