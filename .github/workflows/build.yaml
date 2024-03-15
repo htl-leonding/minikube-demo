@@ -23,6 +23,8 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: |
+          echo ${{secrets.HALLO}} >> my-secret.txt
+          cat my-secret.txt
           echo ${{ github.repository }}
           echo ${{ github.actor }}
           mvn -B package
